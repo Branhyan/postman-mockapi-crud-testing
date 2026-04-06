@@ -1,0 +1,601 @@
+{
+  "info": {
+    "_postman_id": "c536fc50-d9a5-4c73-915a-2d87d254e740",
+    "name": "MockAPI CRUD Testing",
+    "description": "Colección de pruebas CRUD sobre MockAPI REST. Cubre casos positivos y negativos para GET, POST, PUT y DELETE, validando tanto códigos de estado como contenido de respuesta. Incluye restablecimiento de datos entre pruebas.EndFragment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "47753909"
+  },
+  "item": [
+    {
+      "name": "Tests Postivos",
+      "item": [
+        {
+          "name": "PRUEBO GET",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{ base_url}}/posts/1",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 200, se eliminó correctamente\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{ base_url}}/posts/50",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "50"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PUT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Título fue actualizado correctamente\", function() {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.title).to.equal(\"este es el título ahora\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": 1,\r\n    \"id\": 1,\r\n    \"title\": \"este es el título ahora\",\r\n    \"body\": \"y este es el body\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/1",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Y RESTABLECER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 201, se creo el post correctamente\", function(){\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Arbor utique spoliatio concedo tepesco iste succedo.\",\r\n    \"body\": \"Ustilo adnuo unde unus necessitatibus ultio somnus repellendus apto conturbo. Autem denego stultus comedo vacuus certus sumo desipio utique. Bos umerus patria basium thermae arcesso apparatus.\",\r\n    \"userId\": 78,\r\n    \"id\": \"50\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tests Negativos",
+      "item": [
+        {
+          "name": "PRUEBO GET NEGATIVO",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code es 404, falló correctamente\", function(){",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{ base_url}}/posts/-1",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "-1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "COMPROBAR ELIMINAR CON UN PUT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"PUT vacío debería retornar 400\", function() {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/1",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST NEGATIVO CAMPO NO EXISTENTE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"POST con campos extra debería retornar 400\", function(){",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"La API debería aceptar campos extra\", function() {",
+                  "    pm.response.to.not.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"title\": \"Probando..\",\r\n    \"body\": \"Esto es una prueba..\",\r\n    \"campoinexistente\":\"no existe realmente\",\r\n    \"userId\": 1\r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST NEGATIVO URL YA EXISTENTE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"POST en url existente debe retornar 400\", function(){",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": 1,\r\n    \"id\": 1,\r\n    \"title\": \"No debería aceptar esto\",\r\n    \"body\": \"Las ids ya existen\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/1",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "COMPROBAR QUE AL ENVIAR POST CON ID EXISTENTE SE AUTOASIGNA",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"ID debe ser autoasignado y no el enviado\", function() {\r",
+                  "    var json = pm.response.json();\r",
+                  "    pm.expect(json.id).to.not.equal(1);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": 1,\r\n    \"id\": 1,\r\n    \"title\": \"Vamos a comprobaar\",\r\n    \"body\": \"Si esto funciona correctamente\"\r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                ""
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "COMPROBAR SI ACEPTA POST VACÍO",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"POST vacío debe retornar un error 404\", function() {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}\r\n\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Restablecer",
+      "item": [
+        {
+          "name": "ELIMINO EL POST Copy",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{ base_url}}/posts/51",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "51"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ELIMINO EL POST Copy 2",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{ base_url}}/posts/51",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "51"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ELIMINO EL POST Copy 3",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{ base_url}}/posts/51",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "51"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "ELIMINO EL POST",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{ base_url}}/posts/51",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "51"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RESTABLEZCO",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": 1,\r\n    \"id\": 1,\r\n    \"title\": \"sunt aut facere repellat provident occaecati excepturi optio reprehenderit\",\r\n    \"body\": \"quia et suscipit\\nsuscipit recusandae consequuntur expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum rerum est autem sunt rem eveniet architecto\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/1",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "RESTABLEZCO Copy",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": 1,\r\n    \"id\": 1,\r\n    \"title\": \"sunt aut facere repellat provident occaecati excepturi optio reprehenderit\",\r\n    \"body\": \"quia et suscipit\\nsuscipit recusandae consequuntur expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum rerum est autem sunt rem eveniet architecto\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{ base_url}}/posts/1",
+              "host": [
+                "{{ base_url}}"
+              ],
+              "path": [
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": " base_url",
+      "value": ""
+    }
+  ]
+}
